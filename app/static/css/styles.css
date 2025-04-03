@@ -1,0 +1,487 @@
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+
+/* Map styles */
+#map-container {
+  position: relative;
+  flex-grow: 1;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Dialog container - increased z-index */
+#dialog-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1500; /* Increased from 1000 to ensure it's above map and other elements */
+  pointer-events: none; /* Allow clicks to pass through when no dialogs are active */
+}
+
+/* Button styles */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button {
+  background-color: #3b82f6;
+  color: white;
+  font-size: clamp(16px, 4vw, 24px);
+}
+
+.primary-button:hover {
+  background-color: #2563eb;
+}
+
+.outline-button {
+  background-color: white;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.outline-button:hover {
+  background-color: #f9fafb;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background-color: white;
+  color: #4b5563;
+  border: none;
+  border-radius: 6px;
+  align-items: center;
+}
+
+.icon-button:hover {
+  background-color: #f9fafb;
+}
+
+/* Button positions */
+#mobile-menu-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: none;
+}
+
+#check-in-button {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+/* Sidebar styles */
+.fas.fa-times::before {
+  font-size: 30px;
+  margin: 10px;
+  color: black;
+  margin-top: 10px;
+}
+
+#sidebar {
+  width: 320px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-header h2 i {
+  color: #6b7280;
+}
+
+#close-sidebar {
+  display: none;
+}
+
+#check-ins-list {
+  flex-grow: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  display: block;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+}
+
+.sidebar-footer button {
+  width: 100%;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #d1d5db;
+}
+
+.small-text {
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+/* Check-in item styles */
+.check-in-item {
+  padding: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.check-in-item:hover {
+  background-color: #f3f4f6;
+}
+
+.check-in-item p {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.check-in-item p i {
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.check-in-item p.timestamp {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0;
+}
+
+.check-in-item .user {
+  font-weight: 500;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.check-in-item .coordinates {
+  font-size: 0.875rem;
+}
+
+.check-in-item .title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #374151;
+}
+
+/* Actions menu */
+.check-in-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.check-in-actions-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.check-in-actions-button:hover {
+  color: #4b5563;
+}
+
+.check-in-actions-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+  min-width: 150px;
+  z-index: 10;
+  display: none;
+}
+
+.check-in-actions-menu.show {
+  display: block;
+}
+
+.check-in-action-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5563;
+  transition: all 0.2s ease;
+}
+
+.check-in-action-item:hover {
+  background-color: #f9fafb;
+}
+
+.check-in-action-item.delete {
+  color: #ef4444;
+}
+
+.check-in-action-item.delete:hover {
+  background-color: #fee2e2;
+}
+
+/* Toast notifications */
+#toast-container {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1400; /* Increased to be below dialogs but above other elements */
+}
+
+.toast {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  min-width: 280px;
+  max-width: 400px;
+  animation: slideIn 0.3s ease;
+}
+
+.toast-success {
+  background-color: #ecfdf5;
+  border-left: 4px solid #10b981;
+}
+
+.toast-error {
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+}
+
+.toast-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.toast-success .toast-icon {
+  color: #10b981;
+}
+
+.toast-error .toast-icon {
+  color: #ef4444;
+}
+
+.toast-content {
+  flex-grow: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.toast-description {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+  #sidebar {
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  #sidebar.open {
+    transform: translateX(0);
+  }
+  
+  #mobile-menu-toggle {
+    display: flex;
+  }
+  
+  #close-sidebar {
+    display: flex;
+    width: 44px;
+    height: 44px; /* Increased size for better touch targets */
+    font-size: 18px; /* Bigger icon */
+  }
+  
+  #close-sidebar i {
+    font-size: 20px; /* Bigger icon */
+  }
+  
+  /* Hide check-in button when sidebar is open */
+  #sidebar.open + #check-in-button {
+    display: none;
+  }
+  
+  /* Mobile toast adjustments */
+  #toast-container {
+    max-width: 90vw;
+  }
+  
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .toast-description {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Mobile SweetAlert adjustments - revised for better z-index */
+  .swal2-container {
+    position: absolute !important;
+    z-index: 2000 !important; /* Increased to ensure it's above the dialog container */
+    padding: 0 !important;
+  }
+  
+  .swal2-popup {
+    width: 300px !important; /* Fixed width instead of percentage */
+    max-width: 90% !important; /* Maximum width as percentage of parent */
+    padding: 1rem !important;
+    margin: 0 auto !important;
+    border-radius: 8px !important;
+  }
+  
+  .swal2-title {
+    font-size: 1.1rem !important;
+    padding: 0.5rem 0 !important;
+  }
+  
+  .swal2-content {
+    font-size: 0.9rem !important;
+    padding: 0 !important;
+  }
+  
+  .swal2-html-container {
+    margin: 0.5rem 0 !important;
+  }
+  
+  .swal2-input {
+    font-size: 0.9rem !important;
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+    height: auto !important;
+    padding: 0.5rem !important;
+  }
+  
+  .swal2-actions {
+    flex-wrap: wrap !important;
+    margin: 0.5rem 0 0 !important;
+  }
+  
+  .swal2-styled {
+    margin: 0.25rem !important;
+    font-size: 0.85rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+}
+
+/* SweetAlert customizations */
+.swal2-popup {
+  font-family: 'Inter', sans-serif;
+  z-index: 2100 !important; /* Ensure the popup itself has high z-index */
+}
+
+/* Fix for dialogs to ensure they're clickable */
+.swal2-container {
+  pointer-events: auto !important; /* Override any pointer-events inheritance */
+}
+
+.swal2-shown {
+  pointer-events: auto !important; /* Ensure clicks work when dialog is shown */
+}
+
+.swal2-backdrop-show {
+  pointer-events: all !important; /* Make sure the backdrop captures clicks */
+}

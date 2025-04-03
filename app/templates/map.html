@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <title>Карта Check-In</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Map container -->
+    <div id="map-container">
+      <div id="map"></div>
+      
+      <!-- Mobile menu toggle button (right side) -->
+      <button id="mobile-menu-toggle" class="action-button icon-button">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <!-- Check-in button -->
+      <button id="check-in-button" class="action-button primary-button">
+        <i class="fas fa-map-marker-alt"></i>
+        Check-in
+      </button>
+    </div>
+    
+    <!-- Dialog container - this is new -->
+    <div id="dialog-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-list"></i> Check-ins</h2>
+        <button id="close-sidebar" class="icon-button">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div id="check-ins-list">
+        <div class="empty-state">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>Нет отмеченных точек</p>
+          <p class="small-text">Нажмите на карту и затем на кнопку Check-in</p>
+        </div>
+      </div>
+      
+      <!-- Logout button in sidebar (for mobile) -->
+      <div class="sidebar-footer">
+        <button id="logout-button" class="action-button outline-button">
+          <i class="fas fa-sign-out-alt"></i>
+          Выйти
+        </button>
+      </div>
+    </div>
+    
+    <!-- Toast messages -->
+    <div id="toast-container"></div>
+  </div>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Custom JS -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
