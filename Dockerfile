@@ -14,6 +14,11 @@ RUN apt-get update && apt-get upgrade -y \
 
 WORKDIR /app
 
+RUN mkdir -p /app/certs
+
+RUN openssl req -x509 -newkey rsa:4096 -keyout /app/certs/key.pem -out /app/certs/cert.pem \
+  -days 365 -nodes -subj "/CN=localhost" > /dev/null 2>&1
+
 RUN groupadd -g ${GID} -r check_in_group && useradd -u ${UID} \
   -d /home/check_in_user -m -r -g check_in_group -l check_in_user \
   && chown -R check_in_user:check_in_group /app
@@ -21,7 +26,8 @@ RUN groupadd -g ${GID} -r check_in_group && useradd -u ${UID} \
 USER check_in_user
 
 COPY --chown=check_in_user:check_in_user ./app /app/app/
-COPY --chown=check_in_user:check_in_user ./requirements.txt run.py entrypoint.sh /app/
+COPY --chown=check_in_user:check_in_user ./requirements.txt ./run.py /app/
+COPY --chmod=0755 --chown=check_in_user:check_in_group ./entrypoint.sh /app/entrypoint.sh
 
 RUN pip install -r /app/requirements.txt
 
