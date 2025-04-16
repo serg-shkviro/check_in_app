@@ -1,9 +1,21 @@
 from flask import request, jsonify, render_template, redirect, url_for
 from flasgger import swag_from
 from dateutil.parser import isoparse
-
+from .src.user_service import UserService
+from .src.marker_service import MarkerService
 
 def init_routes(app):
+    @app.route('/login')
+    @swag_from({
+        'responses': {
+            200: {
+                'description': 'Страница входа'
+            }
+        }
+    })
+    def login():
+         return render_template('login.html')
+    
     @app.route('/register')
     @swag_from({
         'responses': {
