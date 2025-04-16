@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flasgger import Swagger
 import os
 
 db = SQLAlchemy()
@@ -15,7 +16,8 @@ def create_app():
     Session(app)
 
     db.init_app(app)
-
+    
+    Swagger(app)
     from .routes import init_routes
     init_routes(app)
 
