@@ -18,6 +18,10 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def check_hash_and_hash(self, hash_input):
+        if self.password_hash == hash_input: return True
+        else: return None
 
 
 class Marker(db.Model):

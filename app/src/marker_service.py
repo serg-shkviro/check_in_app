@@ -5,10 +5,10 @@ from app import db
 
 class MarkerService:
     @staticmethod
-    def create_marker(user_email, password, **kwargs):
+    def create_marker(user_email, password_hash, **kwargs):
         user = User.query.filter_by(email=user_email).first()
 
-        if not user or not user.check_password(password):
+        if not user or not user.check_hash_and_hash(password_hash):
             raise ValueError('Неверный пароль')
 
         required_fields = {'latitude', 'longitude', 'title', 'date_time'}
@@ -29,10 +29,10 @@ class MarkerService:
         return marker
 
     @staticmethod
-    def edit_marker(marker_id, user_email, password,  **kwargs):
+    def edit_marker(marker_id, user_email, password_hash,  **kwargs):
         user = User.query.filter_by(email=user_email).first()
 
-        if not user or not user.check_password(password):
+        if not user or not user.check_hash_and_hash(password_hash):
             raise ValueError('Неверный пароль')
 
         marker = Marker.query.filter_by(id=marker_id, user_id=user.id).first()
@@ -49,10 +49,10 @@ class MarkerService:
         return marker
 
     @staticmethod
-    def get_all(user_email, password):
+    def get_all(user_email, password_hash):
         user = User.query.filter_by(email=user_email).first()
 
-        if not user or not user.check_password(password):
+        if not user or not user.check_hash_and_hash(password_hash):
             raise ValueError('Неверный пароль')
 
         if user.id:
@@ -60,10 +60,10 @@ class MarkerService:
         raise ValueError('Неверный пользователь')
 
     @staticmethod
-    def delete_marker(marker_id, user_email, password):
+    def delete_marker(marker_id, user_email, password_hash):
         user = User.query.filter_by(email=user_email).first()
 
-        if not user or not user.check_password(password):
+        if not user or not user.check_hash_and_hash(password_hash):
             raise ValueError('Неверный пароль')
 
         marker = Marker.query.filter_by(id=marker_id, user_id=user.id).first()

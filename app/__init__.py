@@ -12,7 +12,7 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
     app.config['SECRET_KEY'] = 'supersecretkey'
-    app.config['SESSION_TYPE'] = 'filesystem'  # Сессии хранятся на сервере
+    app.config['SESSION_TYPE'] = 'filesystem'
     Session(app)
 
     db.init_app(app)

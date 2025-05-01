@@ -164,36 +164,35 @@ document.addEventListener('DOMContentLoaded', () => {
       title: title
     };
 
-    fetch('/add_marker', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_email: user.email,
-        password: user.password,
-        latitude: newCheckIn.lat,
-        longitude: newCheckIn.lng,
-        title: newCheckIn.title,
-        date_time: newCheckIn.timestamp
+      fetch('/add_marker', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + user.token
+        },
+        body: JSON.stringify({
+          latitude: newCheckIn.lat,
+          longitude: newCheckIn.lng,
+          title: newCheckIn.title,
+          date_time: newCheckIn.timestamp
+        })
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Ошибка:', data.error);
-        return;
-      } else {
-        console.log('Маркер создан:', data);
-        marker_id = data.marker_id;
-        newCheckIn = {
-          id: marker_id,
-          lat: currentPosition.lat,
-          lng: currentPosition.lng,
-          timestamp: new Date(),
-          user: user.name || 'Anonymous',
-          title: title
-        };
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Ошибка:', data.error);
+          return;
+        } else {
+          console.log('Маркер создан:', data);
+          marker_id = data.marker_id;
+          newCheckIn = {
+            id: marker_id,
+            lat: currentPosition.lat,
+            lng: currentPosition.lng,
+            timestamp: new Date(),
+            user: user.name || 'Anonymous',
+            title: title
+          };
         
         checkIns.push(newCheckIn);
         
@@ -240,14 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
     checkInsList.innerHTML = '';
 
     fetch('/get_markers', {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_email: user.email,
-        password: user.password
-      })
+        'Authorization': 'Bearer ' + user.token
+      }
     })
     .then(response => response.json())
     .then(data => {
@@ -257,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Маркеры получены:', data);
 
         data.markers.forEach(markerData => {
-          // Создаем объект checkIn
           const checkIn = {
             id: markerData.id,
             lat: markerData.latitude,
@@ -267,16 +261,12 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: new Date(markerData.date_time)
           };
 
-          const isDuplicate = checkIns.some(item => item.id === checkIn.id)
-          if (isDuplicate) {
-            return;
-          };
-          
-          // 3. Добавляем маркер на карту
+          const isDuplicate = checkIns.some(item => item.id === checkIn.id);
+          if (isDuplicate) return;
+
           const marker = L.marker([checkIn.lat, checkIn.lng], { icon: customIcon }).addTo(map);
           markers[checkIn.id] = marker;
-          
-          // 4. Создаем popup
+
           marker.bindPopup(`
             <div class="marker-popup">
               <div><strong>${checkIn.title}</strong></div>
@@ -430,14 +420,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch('/edit_marker', {
-          method: 'POST',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + user.token
           },
           body: JSON.stringify({
             marker_id: id,
-            user_email: user.email,
-            password: user.password,
             latitude: result.value.lat,
             longitude: result.value.lng,
             title: result.value.title
@@ -449,19 +438,18 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Ошибка:', data.error);
           } else {
             console.log('Маркер изменен:', data);
-            // Update check-in data
+            
             checkIn.title = result.value.title;
             checkIn.lat = result.value.lat;
             checkIn.lng = result.value.lng;
-              
-            // Update marker position
+      
             if (markers[checkIn.id]) {
               map.removeLayer(markers[checkIn.id]);
             }
-            
+      
             const marker = L.marker([checkIn.lat, checkIn.lng], { icon: customIcon }).addTo(map);
             markers[checkIn.id] = marker;
-            
+      
             marker.bindPopup(`
               <div>
                 <div><strong>${checkIn.title}</strong></div>
@@ -470,8 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div><strong>Координаты:</strong> ${checkIn.lat.toFixed(4)}, ${checkIn.lng.toFixed(4)}</div>
               </div>
             `);
-            
-            // Update list
+      
             updateCheckInsList();
             
             // Show success toast
@@ -498,17 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
       confirmButtonColor: '#ef4444',
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(id)
-        fetch('/delete_marker', {
-          method: 'POST',
+        console.log(id);
+        fetch(`/delete_marker?marker_id=${id}`, {
+          method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            marker_id: id,
-            user_email: user.email,
-            password: user.password
-          })
+            'Authorization': 'Bearer ' + user.token
+          }
         })
         .then(response => response.json())
         .then(data => {
@@ -517,16 +500,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           } else {
             console.log('Маркер удален:', data);
-            // Remove marker from map
+      
             if (markers[checkIn.id]) {
               map.removeLayer(markers[checkIn.id]);
               delete markers[checkIn.id];
             }
-
-            // Remove from array
+      
             checkIns = checkIns.filter(item => item.id !== id);
-
-            // Update list
+      
             updateCheckInsList();
 
             // Show success toast

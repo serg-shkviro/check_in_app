@@ -36,27 +36,51 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+    
         const email = loginForm.email.value;
         const password = loginForm.password.value;
-        
+    
         fetch('/sing_in', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message) {
-            showToast('Успешный вход', data.message, 'success');
-            const name = data.name;
-            sessionStorage.setItem('user', JSON.stringify({ name, email, password }));
+        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then(({ status, data }) => {
+          if (status === 200 && data.access_token) {
+            showToast('Успешный вход', 'Добро пожаловать!', 'success');
+            
+            // Сохраняем email, пароль и токен в sessionStorage
+            sessionStorage.setItem('user', JSON.stringify({ email, password, token: data.access_token }));
+    
             setTimeout(() => {
-              window.location.href = '/map';
+              const user = JSON.parse(sessionStorage.getItem('user'));
+              fetch('/map', {
+                headers: {
+                  Authorization: 'Bearer ' + user.token
+                }
+              })
+                .then(response => {
+                  if (!response.ok) throw new Error('Не удалось загрузить страницу');
+                  return response.text();
+                })
+                .then(html => {
+                  document.open();
+                  document.write(html);
+                  document.close();
+                })
+                .catch(error => {
+                  showToast('Ошибка', 'Ошибка загрузки защищённой страницы', 'error');
+                  console.error(error);
+                });
             }, 1000);
           } else {
-            showToast('Ошибка входа', data.error, 'error');
+            showToast('Ошибка входа', data.error || 'Неверный ответ от сервера', 'error');
           }
+        })
+        .catch(error => {
+          console.error('Ошибка запроса:', error);
+          showToast('Ошибка входа', 'Не удалось выполнить запрос', 'error');
         });
       });
     }
@@ -94,18 +118,43 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password, confirmPassword })
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message) {
-            showToast('Успешная регистрация', data.message, 'success');
-            sessionStorage.setItem('user', JSON.stringify({ name, email, password }));
+        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then(({ status, data }) => {
+          if (status === 201 && data.access_token) {
+            showToast('Успешная регистрация', 'Добро пожаловать!', 'success');
+        
+            // Сохраняем данные пользователя и токен
+            sessionStorage.setItem('user', JSON.stringify({ name, email, password, token: data.access_token }));
+        
             setTimeout(() => {
-              window.location.href = '/map';
+              const user = JSON.parse(sessionStorage.getItem('user'));
+              fetch('/map', {
+                headers: {
+                  Authorization: 'Bearer ' + user.token
+                }
+              })
+                .then(response => {
+                  if (!response.ok) throw new Error('Не удалось загрузить страницу');
+                  return response.text();
+                })
+                .then(html => {
+                  document.open();
+                  document.write(html);
+                  document.close();
+                })
+                .catch(error => {
+                  showToast('Ошибка', 'Ошибка загрузки защищённой страницы', 'error');
+                  console.error(error);
+                });
             }, 1000);
           } else {
-            showToast('Ошибка регистрации', data.error, 'error');
+            showToast('Ошибка регистрации', data.error || 'Неверный ответ от сервера', 'error');
           }
+        })
+        .catch(error => {
+          console.error('Ошибка запроса:', error);
+          showToast('Ошибка регистрации', 'Не удалось выполнить запрос', 'error');
         });
       });
     }
-  });
+});
