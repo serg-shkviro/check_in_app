@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = loginForm.email.value;
         const password = loginForm.password.value;
     
-        fetch('/sing_in', {
+        fetch('/sign_in', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         
-        fetch('/sing_up', {
+        fetch('/sign_up', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password, confirmPassword })

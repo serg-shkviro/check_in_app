@@ -95,7 +95,7 @@ def init_routes(app):
         else:
             return jsonify({'user': None}), 401
 
-    @app.route('/sing_up', methods=['POST'])
+    @app.route('/sign_up', methods=['POST'])
     @swag_from({
         'tags': ['Authentication'],
         'summary': 'Регистрация нового пользователя',
@@ -160,7 +160,7 @@ def init_routes(app):
             }
         }
     })
-    def sing_up():
+    def sign_up():
         data = request.get_json()
 
         try:
@@ -178,7 +178,7 @@ def init_routes(app):
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 
-    @app.route('/sing_in', methods=['POST'])
+    @app.route('/sign_in', methods=['POST'])
     @swag_from({
         'tags': ['Authentication'],
         'summary': 'Авторизация пользователя',
@@ -234,7 +234,7 @@ def init_routes(app):
             }
         }
     })
-    def sing_in():
+    def sign_in():
         data = request.get_json()
 
         try:
