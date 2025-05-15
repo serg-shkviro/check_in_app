@@ -26,7 +26,7 @@ docker build -t check-in-image .
 
 После успешной сборки появится образ `check-in-image:latest`. Для запуска контейнера выполните:
 ```bash
-docker run -p 8000:5000 -d -e JWT_SECRET=SECRET --name check_in check-in-image:latest
+docker run -p 8000:5000 -p 8001:8000 -d -e JWT_SECRET=SECRET --name check_in check-in-image:latest
 ```
 
 После выполненных действий появится контейнер с именем `check_in` работающий на порту 8000. 
