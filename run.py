@@ -8,12 +8,11 @@ import ssl
 from wsgiref.simple_server import make_server
 import threading
 
-# Flask app setup
 app = create_app()
 app.config['JWT_SECRET_KEY'] = CheckinSettings.JWT_SECRET
 jwt = JWTManager(app)
 
-# SOAP service
+# SOAP ?
 def soap_service(environ, start_response):
     wsdl = """<?xml version="1.0"?>
     <wsdl:definitions name="LocationService"
@@ -62,7 +61,7 @@ def soap_service(environ, start_response):
         start_response('200 OK', [('Content-Type', 'text/xml')])
         return [wsdl.encode('utf-8')]
 
-    # Handle SOAP request
+    # return random (one endpoint)
     latitude = random.uniform(-90, 90)
     longitude = random.uniform(-180, 180)
     response = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -78,17 +77,15 @@ def soap_service(environ, start_response):
     start_response('200 OK', [('Content-Type', 'text/xml')])
     return [response.encode('utf-8')]
 
-# Run SOAP server in a separate thread
+# in thread
 def run_soap_server():
     soap_server = make_server('0.0.0.0', 8000, soap_service)
     soap_server.serve_forever()
 
 if __name__ == '__main__':
-    # Start SOAP server in a thread
     soap_thread = threading.Thread(target=run_soap_server, daemon=True)
     soap_thread.start()
     
-    # Run Flask app with gunicorn
     from gunicorn.app.base import BaseApplication
     
     class StandaloneApplication(BaseApplication):
